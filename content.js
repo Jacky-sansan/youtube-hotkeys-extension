@@ -81,6 +81,12 @@ function setupMessageListener() {
             .click();
         }
         break;
+      case "speedup":
+        video.playbackRate += 0.25;
+        break;
+      case "slowdown":
+        video.playbackRate = Math.max(0.25, video.playbackRate - 0.25);
+        break;
     }
   });
 }

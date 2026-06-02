@@ -43,6 +43,20 @@
         "mac": "Command+Shift+K"
       },
       "description": "Toggle YouTube Shorts description"
+    },
+    "speedup": {
+      "suggested_key": {
+        "default": "Shift+Period",
+        "mac": "Shift+Period"
+      },
+      "description": "Increase YouTube video speed by 0.25x"
+    },
+    "slowdown": {
+      "suggested_key": {
+        "default": "Shift+Comma",
+        "mac": "Shift+Comma"
+      },
+      "description": "Decrease YouTube video speed by 0.25x"
     }
   },
   "background": {
