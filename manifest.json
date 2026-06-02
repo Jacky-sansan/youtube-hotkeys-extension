@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Hotkeys; Video Background Play Fixer",
+  "version": "1.0",
+  "description": "Add custom hotkeys to control YouTube videos; Automatically inserts a script on certain websites",
+  "permissions": ["activeTab", "commands", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content.js"]
+    },
+    {
+      "matches": ["*://*.youtube.com/shorts/*"],
+      "js": ["shorts.js"]
+    },
+    {
+      "matches": ["*://www.instagram.com/reels/*", "*://www.tiktok.com/*"],
+      "js": ["background_play.js"]
+    },
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["background_play_youtube.js"]
+    }
+  ],
+  "commands": {
+    "forward-1-second": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Right",
+        "mac": "Command+Shift+Right"
+      },
+      "description": "Forward YouTube video by 1 second"
+    },
+    "backward-1-second": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Left",
+        "mac": "Command+Shift+Left"
+      },
+      "description": "Rewind YouTube video by 1 second"
+    },
+    "toggle-description": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Toggle YouTube Shorts description"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+  // "action": {
+  //   "default_popup": "popup.html"
+  // }
+}
