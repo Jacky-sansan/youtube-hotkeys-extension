@@ -6,10 +6,6 @@
   "permissions": ["activeTab", "commands", "storage"],
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
-      "js": ["content.js"]
-    },
-    {
       "matches": ["*://*.youtube.com/shorts/*"],
       "js": ["shorts.js"]
     },
@@ -19,49 +15,9 @@
     },
     {
       "matches": ["*://www.youtube.com/*"],
-      "js": ["background_play_youtube.js"]
+      "js": ["content.js","background_play_youtube.js"]
     }
-  ],
-  "commands": {
-    "forward-1-second": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Right",
-        "mac": "Command+Shift+Right"
-      },
-      "description": "Forward YouTube video by 1 second"
-    },
-    "backward-1-second": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Left",
-        "mac": "Command+Shift+Left"
-      },
-      "description": "Rewind YouTube video by 1 second"
-    },
-    "toggle-description": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+K",
-        "mac": "Command+Shift+K"
-      },
-      "description": "Toggle YouTube Shorts description"
-    },
-    "speedup": {
-      "suggested_key": {
-        "default": "Shift+Period",
-        "mac": "Shift+Period"
-      },
-      "description": "Increase YouTube video speed by 0.25x"
-    },
-    "slowdown": {
-      "suggested_key": {
-        "default": "Shift+Comma",
-        "mac": "Shift+Comma"
-      },
-      "description": "Decrease YouTube video speed by 0.25x"
-    }
-  },
-  "background": {
-    "service_worker": "background.js"
-  }
+  ]
   // "action": {
   //   "default_popup": "popup.html"
   // }

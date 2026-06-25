@@ -1,5 +1,69 @@
 let videoFPS = null;
 
+document.addEventListener("keydown", (event) => {
+  // SAFETY CHECK: Ignore shortcuts if the user is typing in an input field or textarea
+  const target = event.target;
+  if (
+    target.tagName === "INPUT" ||
+    target.tagName === "TEXTAREA" ||
+    target.isContentEditable
+  ) {
+    return;
+  }
+
+  // 
+  if (event.ctrlKey && event.shiftKey && event.key === "ArrowLeft") {
+    event.preventDefault(); // Stop the default browser action
+    triggerAction("backward-1-second");
+  }
+  else if (event.ctrlKey && event.shiftKey && event.key === "ArrowRight") {
+    event.preventDefault();
+    triggerAction("forward-1-second");
+  }
+  else if (event.ctrlKey && event.shiftKey && event.key === ",") {
+    event.preventDefault();
+    triggerAction("slowdown");
+  }
+  else if (event.ctrlKey && event.shiftKey && event.key === ".") {
+    event.preventDefault();
+    triggerAction("slowdown");
+  }
+
+});
+
+// Function to handle the triggered action
+function triggerAction(actionName) {
+  console.log("Shortcut activated: ", actionName);
+
+  let video
+
+  const currentUrl = window.location.href; 
+  if (currentUrl.includes('shorts')) 
+    video = document.querySelectorAll("video")[1];
+  else
+    video = document.querySelector("video");
+  if (!video) return;
+
+  switch (actionName) {
+    case "mute-unmute":
+      video.muted = !video.muted;
+      break;
+    case "forward-1-second":
+      video.currentTime += 1;
+      break;
+    case "backward-1-second":
+      video.currentTime -= 1;
+      break;
+    case "speedup":
+      video.playbackRate += 0.25;
+      break;
+    case "slowdown":
+      video.playbackRate = Math.max(0.25, video.playbackRate - 0.25);
+      break;
+  }
+
+}
+
 function getVideoFramerate(video) {
   return new Promise((resolve) => {
     let times = [];
@@ -24,101 +88,3 @@ function getVideoFramerate(video) {
     }
   });
 }
-
-const waitForElement = (selector) => {
-  return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      const el = document.getElementsByClassName(selector);
-      if (el) {
-        console.log(
-          `[YouTube Hotkeys] Found element with selector: ${selector}`,
-        );
-        clearInterval(interval);
-        resolve(el);
-      }
-    }, 100); // Check every 100ms
-  });
-};
-
-function setupMessageListener() {
-  if (window.__youtubeHotkeysInitialized) return;
-  window.__youtubeHotkeysInitialized = true;
-
-  chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-    const video = document.querySelector("video");
-    if (!video) return;
-
-    switch (request.action) {
-      case "mute-unmute":
-        video.muted = !video.muted;
-        break;
-      case "forward-1-second":
-        video.currentTime += 1;
-        break;
-      case "backward-1-second":
-        video.currentTime -= 1;
-        break;
-      case "toggle-description":
-        let menuToggle = document.getElementById("anchored-panel")?.children[1];
-        if (
-          menuToggle &&
-          menuToggle.getAttribute("visibility") ===
-            "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
-        ) {
-          document
-            .getElementsByClassName("ytSpecTouchFeedbackShapeFill")[4]
-            .click();
-          const descriptionButton = await waitForElement(
-            "yt-core-attributed-string ytListItemViewModelTitle yt-core-attributed-string--white-space-pre-wrap",
-          );
-          console.log(descriptionButton);
-          descriptionButton[0].click();
-        } else {
-          document
-            .getElementsByClassName(
-              "ytSpecTouchFeedbackShapeHost ytSpecTouchFeedbackShapeTouchResponse",
-            )[7]
-            .click();
-        }
-        break;
-      case "speedup":
-        video.playbackRate += 0.25;
-        break;
-      case "slowdown":
-        video.playbackRate = Math.max(0.25, video.playbackRate - 0.25);
-        break;
-    }
-  });
-}
-
-// Try to initialize immediately in case the video is already present
-function initVideoScript() {
-  const video = document.querySelector("video");
-  if (!video) {
-    return false;
-  }
-
-  setupMessageListener();
-  return true;
-}
-
-function waitForVideoAndInit() {
-  if (initVideoScript()) {
-    console.log("[YouTube Hotkeys] video found, script initialized");
-    return;
-  }
-
-  const observer = new MutationObserver(() => {
-    if (initVideoScript()) {
-      observer.disconnect();
-      console.log("[YouTube Hotkeys] video appeared, script initialized");
-    }
-  });
-
-  observer.observe(document.documentElement || document.body, {
-    childList: true,
-    subtree: true,
-  });
-}
-
-waitForVideoAndInit();
